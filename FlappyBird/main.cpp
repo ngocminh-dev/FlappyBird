@@ -120,10 +120,11 @@ int main(int argc, char* argv[])
     g_ground.SetRect(0, GROUND_MAP);
 
 again_label:
-
+    //Khởi tạo text để hiển thị điểm
     TextObject text_count_;
     text_count_.setColor(TextObject::WHITE_TEXT);
 
+    //Load hình con chim
     PlayerObject player;
     ret = player.LoadImg("img//fl_bird.png", g_screen);
     player.SetRect(100, 100);
@@ -131,7 +132,8 @@ again_label:
     {
         return -1;
     }
-
+    
+    //Khởi tạo các cột
     BlockManager manage_block;
     ret = manage_block.InitBlockList(g_screen);
     if (ret == false)

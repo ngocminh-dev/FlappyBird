@@ -38,7 +38,6 @@ public:
     SDL_Rect GetTopRect();
     void SetRectVal(const UINT& xp);
     void GetRectSlot();
-    void DrawBound(SDL_Renderer* des);
     bool CheckPass(SDL_Rect rect);
     bool GetIsPass() const { return is_pass_; }
     void SetIsPass(const bool& pp) { is_pass_ = pp; }

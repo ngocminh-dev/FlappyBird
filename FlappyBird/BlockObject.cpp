@@ -1,9 +1,10 @@
-
+﻿
 #include "BlockObject.h"
 
+//Vị trí của các cột
 INT g_pos[] = { 1250, 1500, 1750, 2000, 2250, 2500 };
 
-
+// định nghĩa class 1 cột
 BlockObject::BlockObject()
 {
     is_back_ = false;
@@ -46,6 +47,8 @@ void BlockObject::DoRun(UINT& x_val)
     }
 }
 
+
+// định nghĩa class cả 2 cột trên dưới
 DoubleBlock::DoubleBlock()
 {
     x_val_ = -3;
@@ -60,24 +63,35 @@ DoubleBlock::~DoubleBlock()
 
 bool DoubleBlock::InitBlock(SDL_Renderer* screen , const int& xp)
 {
+    //Lấy ngẫu nhiên 1 con số từ 1 đến 10
     int number = SDLCommonFunc::MyRandom(1, 10);
     int number2 = number;
+    //Nhân với 14 thì number trong khoảng từ 14 đến 140, còn lí do tại sao thì ở dưới sẽ giải thích
+    //các cột sẽ lên xuống ngẫu nhiên 1 khoảng là number2
     number = number * 14;
 
     bool ret1 = m_Topblock.LoadImg("img//topblock2.png", screen);
     bool ret2 = m_BottomBlock.LoadImg("img//bottomblock2.png", screen);
 
-    if (number2 % 2 == true)
+    if (number2 % 2 == 0) 
     {
+        //khoảng không chúng ta để cho chú chim có thể vượt qua đều như nhau và bằng 160.
+        //Chọn số 160 vì ảnh chim là 64x40
+        // để vượt qua ống chỉ có 4 vị trí (160/40=4) đó là con số vừa đủ cũng như là tăng độ khó cho game
+        // ảnh ống là 64*520
+        //Vậy để 2 ống cách nhau 160 thì chúng ta chỉ cần vẽ hình rồi tính toán xem đặt y_pos làm sao cho hợp lí
         m_Topblock.SetPos(xp, -300 - number);
         m_BottomBlock.SetPos(xp, GROUND_MAP - 220 - number);
     }
     else
-    {
+    {   
+        //Nếu chia hết cho 2 thì ta sẽ hạ ống xuống còn nếu không chia hết cho 2 thì sẽ nâng ống lên
+        //Nhưng vẫn đảm bảo 2 ống cách nhau 1 khoảng là 160
         m_Topblock.SetPos(xp, -300 + number);
         m_BottomBlock.SetPos(xp, GROUND_MAP - 220 + number);
     }
-
+    
+    //Nếu load được ảnh thì đương nhiên là trả về true rồi, còn không thì mặc định sẽ trả về false
     if (ret1 && ret2)
         return true;
     return false;
@@ -85,12 +99,15 @@ bool DoubleBlock::InitBlock(SDL_Renderer* screen , const int& xp)
 
 void DoubleBlock::RenderImg(SDL_Renderer* screen)
 {
+    //Hiển thị cột
     m_Topblock.ShowImg(screen);
     m_BottomBlock.ShowImg(screen);
 }
 
 void DoubleBlock::DoMoving()
 {
+    //Cho cả 2 cột trên dưới chạy về phía trước
+    //Do x_val_ mình cài ban đầu là nó âm
     m_Topblock.DoRun(x_val_);
     m_BottomBlock.DoRun(x_val_);
     if (m_Topblock.GetStateBack() || m_BottomBlock.GetStateBack())
@@ -127,15 +144,11 @@ void DoubleBlock::GetRectSlot()
     slot_rect_.h = 160;
 }
 
-void DoubleBlock::DrawBound(SDL_Renderer* des)
-{
-    GeometricFormat outlie_size(slot_rect_.x, slot_rect_.y, slot_rect_.w, slot_rect_.h);
-    ColorData color_data1(255, 255, 255);
-    Gemometric::RenderOutline(outlie_size, color_data1, des);
-}
 
 bool DoubleBlock::CheckPass(SDL_Rect rect)
 {
+    //Check va chạm với phần tính điểm, 
+    //nếu chạm vào phần tính điểm đó( tức là qua được cột) trả về true, không qua được trả về false
     bool ret = false;
     ret = SDLCommonFunc::CheckCollision(rect, slot_rect_);
     return ret;
@@ -143,6 +156,7 @@ bool DoubleBlock::CheckPass(SDL_Rect rect)
 
 bool DoubleBlock::CheckCol(SDL_Rect pl_rect)
 {
+    //Check va chạm với cột trên và dưới
     bool ret1 = SDLCommonFunc::CheckCollision(pl_rect, m_Topblock.GetRectPos());
     bool ret2 = SDLCommonFunc::CheckCollision(pl_rect, m_BottomBlock.GetRectPos());
 
@@ -154,7 +168,7 @@ bool DoubleBlock::CheckCol(SDL_Rect pl_rect)
     return false;
 }
 
-//Block manager
+//Quản lý các block
 
 BlockManager::BlockManager()
 {
@@ -169,7 +183,7 @@ BlockManager::~BlockManager()
     FreeBlock();
 }
 
-void BlockManager::FreeBlock()
+void BlockManager::FreeBlock()//Giải phóng các block 
 {
     for (int i = 0; i < m_BlockList.size(); i++)
     {
@@ -192,14 +206,19 @@ bool BlockManager::InitBlockList(SDL_Renderer* screen)
 
     int ret = m_block1->InitBlock(screen, g_pos[0]);
     if (ret == false) return false;
+
     ret = m_block2->InitBlock(screen, g_pos[1]);
     if (ret == false) return false;
+
     ret = m_block3->InitBlock(screen, g_pos[2]);
     if (ret == false) return false;
+
     ret = m_block4->InitBlock(screen, g_pos[3]);
     if (ret == false) return false;
+
     ret = m_block5->InitBlock(screen, g_pos[4]);
     if (ret == false) return false;
+
     ret = m_block6->InitBlock(screen, g_pos[5]);
     if (ret == false) return false;
 
@@ -224,16 +243,15 @@ void BlockManager::Render(SDL_Renderer* screen)
     for (int i = 0; i < m_BlockList.size(); i++)
     {
         DoubleBlock* pBlock = m_BlockList.at(i);
-
+        // mỗi cột thì lại tạo ra phần tính điểm
         pBlock->GetRectSlot();
-        //pBlock->DrawBound(screen);
 
         if (!stop_moving_)
         {
-            pBlock->DoMoving();
+            pBlock->DoMoving();//Cho nó chạy về phía trước
 
             bool ret = pBlock->GetIsBack();
-            if (ret == true)
+            if (ret == true)//Nếu nó đang chạy về phía trước
             {
                 DoubleBlock* endBlock = m_BlockList.at(xp_max_);
                 SDL_Rect end_rect = endBlock->GetTopRect();
