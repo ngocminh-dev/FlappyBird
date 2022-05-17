@@ -163,21 +163,22 @@ again_label:
 
         g_background.Render(g_screen, NULL);
 
-        manage_block.SetPlayerRect(player.GetRect());
-        //Nếu mà chạm trúng cái cột -> game over thì ko cho di chuyển nữa
+        manage_block.SetPlayerRect(player.GetRect());//Lấy tọa độ của player - con chim để xử lí khi va chạm với các block
+        //Nếu mà nó đã rơi xuống đất -> game over thì ko cho di chuyển nữa
         bool is_falling = player.GetFalling();
         if (is_falling == true)
         {
             manage_block.SetStopMoving(true);
         }
-
+        //Hiển thị block ra màn hình
         manage_block.Render(g_screen);
 
-        bool end_game = manage_block.GetColState();
+        bool end_game = manage_block.GetColState();//Check xem có va chạm không, nếu có thì set để cho nó chỉ rơi -> game over
         if (end_game == true)
         {
             player.SetFalling(true);
         }
+        //Còn nếu khônng thì nó vẫn rơi và ta vẫn có thể điều khiển nó bay lên bình thường và cho nó hiển thị ra màn hình
         player.DoFalling(g_screen);
         player.Show(g_screen);
 

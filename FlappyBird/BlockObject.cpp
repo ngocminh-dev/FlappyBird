@@ -1,7 +1,7 @@
 ﻿
 #include "BlockObject.h"
 
-//Vị trí của các cột
+//Vị trí của các cột ban đầu
 INT g_pos[] = { 1250, 1500, 1750, 2000, 2250, 2500 };
 
 // định nghĩa class 1 cột
@@ -38,6 +38,7 @@ void BlockObject::ShowImg(SDL_Renderer* screen)
     this->Render(screen);
 }
 
+//Cho cột di chuyển phụ thuộc vào x_val
 void BlockObject::DoRun(UINT& x_val)
 {
     this->rect_.x += x_val;
@@ -134,14 +135,16 @@ void DoubleBlock::SetIsBack(bool isBack)
     m_BottomBlock.SetBack(isBack);
 }
 
-void DoubleBlock::GetRectSlot()
+void DoubleBlock::GetRectSlot() //Hàm này tạo ra phần tính điểm
 {
+   
     SDL_Rect rect_top = m_Topblock.GetRectPos();
 
     slot_rect_.x = rect_top.x + rect_top.w;
     slot_rect_.y = rect_top.y + rect_top.h;
     slot_rect_.w = 5;
     slot_rect_.h = 160;
+    //Sau ta chỉ cần check va chạm của 2 object là con chim và phần tính điểm
 }
 
 
@@ -197,6 +200,8 @@ void BlockManager::FreeBlock()//Giải phóng các block
 
 bool BlockManager::InitBlockList(SDL_Renderer* screen)
 {
+    //Khởi tạo list block vì chướng ngại vật của chúng ta không chỉ có 1 cái mà có nhiều cái
+    //vậy nên sẽ có 1 list để chứa các block đó
     DoubleBlock* m_block1 = new DoubleBlock();
     DoubleBlock* m_block2 = new DoubleBlock();
     DoubleBlock* m_block3 = new DoubleBlock();
@@ -204,6 +209,7 @@ bool BlockManager::InitBlockList(SDL_Renderer* screen)
     DoubleBlock* m_block5 = new DoubleBlock();
     DoubleBlock* m_block6 = new DoubleBlock();
 
+    //Load các block đó lên màn hình và đưa nó vào blocklist
     int ret = m_block1->InitBlock(screen, g_pos[0]);
     if (ret == false) return false;
 
@@ -251,17 +257,18 @@ void BlockManager::Render(SDL_Renderer* screen)
             pBlock->DoMoving();//Cho nó chạy về phía trước
 
             bool ret = pBlock->GetIsBack();
-            if (ret == true)//Nếu nó đang chạy về phía trước
+            if (ret == true)//Nếu nó đang chạy về phía trước thì ta mới tạo ra cột chướng ngại vật tiếp theo
             {
-                DoubleBlock* endBlock = m_BlockList.at(xp_max_);
-                SDL_Rect end_rect = endBlock->GetTopRect();
-                UINT xp = end_rect.x + 250;
+                DoubleBlock* endBlock = m_BlockList.at(xp_max_);//Lấy tất cả thông số của cột cuối cùng
+                SDL_Rect end_rect = endBlock->GetTopRect();//Lấy rect của cột đó
+                UINT xp = end_rect.x + 250;//Lấy tọa độ x và cộng thêm 250 để các cột cách đều nhau
                 pBlock->SetRectVal(xp);
                 pBlock->SetIsBack(false);
                 pBlock->SetIsPass(false);
                 xp_max_ = i;
             }
 
+            //Load âm thanh nếu chạm vào cột
             bool isCol = pBlock->CheckCol(player_rect_);
             if (isCol == true)
             {
@@ -272,6 +279,7 @@ void BlockManager::Render(SDL_Renderer* screen)
                 break;
             }
 
+            //Load âm thanh nếu vượt qua được 1 cột
             ret = pBlock->CheckPass(player_rect_);
             if (ret == true)
             {

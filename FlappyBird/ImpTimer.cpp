@@ -53,12 +53,12 @@ int ImpTimer::get_ticks()
 {
   if( is_started_ == true )
   {
-    //If the timer is paused
+    //Nếu thời gian đang tạm dừng thì trả về lúc đang tạm dừng đó
     if( is_paused_ == true )
     {
       return paused_ticks_;
     }
-    else
+    else//đây là thời gian đang tiếp tục trôi thì trả về tại chính thời điểm đó
     {
       return SDL_GetTicks() - start_tick_;
     }
