@@ -24,7 +24,7 @@ bool InitData()
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    g_window = SDL_CreateWindow("FlappyBird", 
+    g_window = SDL_CreateWindow("FlappyBird-UET", 
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -54,13 +54,13 @@ bool InitData()
             bSucess = false;
         }
 
-        g_font_text = TTF_OpenFont("font//ARCADE.ttf", 38);
+        g_font_text = TTF_OpenFont("font//Myriad Pro Regular.ttf", 32);
         if (g_font_text == NULL)
         {
             return false;
         }
 
-        g_font_MENU = TTF_OpenFont("font//ARCADE.ttf", 80);
+        g_font_MENU = TTF_OpenFont("font//Myriad Pro Regular.ttf", 80);
         if (g_font_MENU == NULL)
         {
             return false;
