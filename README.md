@@ -9,7 +9,7 @@
 
 	-Các chức năng của game gồm: Bắt đầu trò chơi, Chơi lại khi thua, Thoát game
 	
-	-Video hướng dẫn cài đặt và demo game:
+	-Video hướng dẫn cài đặt và demo game: https://youtu.be/hbWZxf1GxpQ
 		
 *Các kỹ thuật lập trình được sử dụng:
 
