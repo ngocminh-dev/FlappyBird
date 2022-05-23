@@ -24,7 +24,7 @@ void PlayerObject::HandleInputAction(SDL_Event events, SDL_Renderer* screen)
       {
         if (is_falling_ == false)
         {
-            y_val_ = -12;
+            y_val_ = -8;
         }
       }
     }
